@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ліхтарик</string>
+    <string name="action_menu">Розробник</string>
+    <string name="light_on">Включити спалах!</string>
+    <string name="light_off">Вимкнути спалах!</string>
+
+</resources>

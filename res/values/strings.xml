@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Torch</string>
+    <string name="action_menu">Developer</string>
+    <string name="light_on">Light on!</string>
+    <string name="light_off">Light off!</string>
+
+</resources>
