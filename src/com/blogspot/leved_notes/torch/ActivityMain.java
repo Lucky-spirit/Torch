@@ -1,6 +1,7 @@
 package com.blogspot.leved_notes.torch;
 
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,11 +29,8 @@ public class ActivityMain extends Activity implements OnClickListener {
 		findViewById(R.id.btn_light).setOnClickListener(this);
 		findViewById(R.id.btn_text).setOnClickListener(this);
 
-		if (!checkCameraHardware()) {
-			Toast.makeText(this, "You have not Flash", Toast.LENGTH_LONG)
-					.show();
-			finish();
-		}
+		if (!checkCameraHardware())
+			gameOver();
 
 		mCamera = getCameraInstance();
 		checkFlash();
@@ -40,18 +38,15 @@ public class ActivityMain extends Activity implements OnClickListener {
 	}
 
 	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-
-	}
-
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
+	public void finish() {
+		super.finish();
 		if (mCamera != null)
 			mCamera.release();
+	}
+
+	public void gameOver() {
+		finish();
+		Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -93,18 +88,26 @@ public class ActivityMain extends Activity implements OnClickListener {
 				&& pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
 			// this device has a camera and flash
 			result = true;
-		}
+		} else
+			gameOver();
 
 		return result;
 	}
 
 	/** A safe way to get an instance of the Camera object. */
 	public Camera getCameraInstance() {
+		CameraInfo info = new CameraInfo();
 		Camera c = null;
-		try {
-			c = Camera.open(); // attempt to get a Camera instance
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+			Camera.getCameraInfo(i, info);
+			if (info.facing == CameraInfo.CAMERA_FACING_BACK) {
+				try {
+					c = Camera.open(i); // attempt to get a Camera instance
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		return c; // returns null if camera is unavailable
@@ -115,15 +118,18 @@ public class ActivityMain extends Activity implements OnClickListener {
 			mParams = mCamera.getParameters();
 			mState = mParams.getFlashMode().equals(Parameters.FLASH_MODE_TORCH) ? true
 					: false;
-		}
+		} else
+			gameOver();
 	}
 
 	private void light() {
-		String mode = mState ? Parameters.FLASH_MODE_TORCH
-				: Parameters.FLASH_MODE_OFF;
+		if (mCamera != null) {
+			String mode = mState ? Parameters.FLASH_MODE_TORCH
+					: Parameters.FLASH_MODE_OFF;
 
-		mParams.setFlashMode(mode);
-		mCamera.setParameters(mParams);
+			mParams.setFlashMode(mode);
+			mCamera.setParameters(mParams);
+		}
 	}
 
 }
