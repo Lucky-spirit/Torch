@@ -34,6 +34,12 @@ public class ActivityMain extends Activity implements OnClickListener {
 
 		mCamera = getCameraInstance();
 		checkFlash();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mState = ((ToggleButton) findViewById(R.id.btn_text)).isChecked();
 		light();
 	}
 
