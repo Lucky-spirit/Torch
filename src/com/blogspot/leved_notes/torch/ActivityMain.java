@@ -1,5 +1,8 @@
 package com.blogspot.leved_notes.torch;
 
+import java.io.IOException;
+
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -33,6 +36,14 @@ public class ActivityMain extends Activity implements OnClickListener {
 			gameOver();
 
 		mCamera = getCameraInstance();
+
+		try {
+			mCamera.setPreviewTexture(new SurfaceTexture(0));
+			mCamera.startPreview();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		checkFlash();
 	}
 
@@ -66,8 +77,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent intent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("http://vk.com/id22849605"));
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://vk.com/id22849605"));
 			startActivity(intent);
 			return true;
 
@@ -122,16 +132,14 @@ public class ActivityMain extends Activity implements OnClickListener {
 	private void checkFlash() {
 		if (mCamera != null) {
 			mParams = mCamera.getParameters();
-			mState = mParams.getFlashMode().equals(Parameters.FLASH_MODE_TORCH) ? true
-					: false;
+			mState = mParams.getFlashMode().equals(Parameters.FLASH_MODE_TORCH) ? true : false;
 		} else
 			gameOver();
 	}
 
 	private void light() {
 		if (mCamera != null) {
-			String mode = mState ? Parameters.FLASH_MODE_TORCH
-					: Parameters.FLASH_MODE_OFF;
+			String mode = mState ? Parameters.FLASH_MODE_TORCH : Parameters.FLASH_MODE_OFF;
 
 			mParams.setFlashMode(mode);
 			mCamera.setParameters(mParams);
