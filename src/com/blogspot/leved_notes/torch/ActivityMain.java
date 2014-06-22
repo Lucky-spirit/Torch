@@ -1,16 +1,16 @@
 package com.blogspot.leved_notes.torch;
 
-import java.io.IOException;
-
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,14 +37,21 @@ public class ActivityMain extends Activity implements OnClickListener {
 
 		mCamera = getCameraInstance();
 
-		try {
-			mCamera.setPreviewTexture(new SurfaceTexture(0));
-			mCamera.startPreview();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		setPreview();
 
 		checkFlash();
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setPreview() {
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			try {
+				mCamera.setPreviewTexture(new SurfaceTexture(0));
+				mCamera.startPreview();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -77,7 +84,8 @@ public class ActivityMain extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://vk.com/id22849605"));
+			Intent intent = new Intent(Intent.ACTION_VIEW,
+					Uri.parse("http://vk.com/id22849605"));
 			startActivity(intent);
 			return true;
 
@@ -131,18 +139,28 @@ public class ActivityMain extends Activity implements OnClickListener {
 
 	private void checkFlash() {
 		if (mCamera != null) {
-			mParams = mCamera.getParameters();
-			mState = mParams.getFlashMode().equals(Parameters.FLASH_MODE_TORCH) ? true : false;
+			try {
+				mParams = mCamera.getParameters();
+				mState = mParams.getFlashMode().equals(
+						Parameters.FLASH_MODE_TORCH) ? true : false;
+			} catch (Exception e) {
+				gameOver();
+			}
 		} else
 			gameOver();
 	}
 
 	private void light() {
 		if (mCamera != null) {
-			String mode = mState ? Parameters.FLASH_MODE_TORCH : Parameters.FLASH_MODE_OFF;
+			try {
+				String mode = mState ? Parameters.FLASH_MODE_TORCH
+						: Parameters.FLASH_MODE_OFF;
 
-			mParams.setFlashMode(mode);
-			mCamera.setParameters(mParams);
+				mParams.setFlashMode(mode);
+				mCamera.setParameters(mParams);
+			} catch (Exception e) {
+				gameOver();
+			}
 		}
 	}
 

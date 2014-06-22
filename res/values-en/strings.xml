@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Ліхтарик</string>
-    <string name="action_menu">Розробник</string>
-    <string name="light_on">Включити спалах!</string>
-    <string name="light_off">Вимкнути спалах!</string>
-    <string name="error">У вас немає задньої камерою зі спалахом!</string>
+    <string name="app_name">Torch</string>
+    <string name="action_menu">Developer</string>
+    <string name="light_on">Light on!</string>
+    <string name="light_off">Light off!</string>
+    <string name="error">You do not have the back camera with flash!</string>
 
 </resources>
